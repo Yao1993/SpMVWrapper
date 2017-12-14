@@ -1,0 +1,15 @@
+{
+    "num_iterations": 1000,
+    
+    "matrix_path": [
+        "C:/Users/tm42h7/Desktop/TPS/DoseMatrix/"
+    ],
+
+    "matrices": [
+        {
+            "num_rows" : 8695,
+            "num_cols" : 6987,
+            "data_filename" : "PTV.bin"
+        }
+    ]
+}
