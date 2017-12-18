@@ -16,6 +16,8 @@ ExternalProject_Add(
     CONFIGURE_COMMAND  ""
     BUILD_COMMAND   ""
     INSTALL_COMMAND ""
+
+    UPDATE_DISCONNECTED 1
 )
 set_target_properties(cusplibrary PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
@@ -37,6 +39,8 @@ ExternalProject_Add(
     CONFIGURE_COMMAND  ""
     BUILD_COMMAND   ""
     INSTALL_COMMAND ""
+
+    UPDATE_DISCONNECTED 1
 )
 set_target_properties(yao PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
@@ -58,6 +62,8 @@ ExternalProject_Add(
     CONFIGURE_COMMAND  ""
     BUILD_COMMAND   ""
     INSTALL_COMMAND ""
+
+    UPDATE_DISCONNECTED 1
 )
 set_target_properties(json PROPERTIES EXCLUDE_FROM_ALL TRUE)
 
