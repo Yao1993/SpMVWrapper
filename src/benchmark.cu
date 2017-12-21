@@ -47,6 +47,19 @@ void read_matrix(const matrix_info &matrix, const std::vector<std::string> path,
 	
 }
 
+
+template <typename callable_t>
+double time_spmv(callable_t c, int num_iterations)
+{
+	auto t1 = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < num_iterations; i++)
+		c();
+	auto t2 = std::chrono::high_resolution_clock::now();
+	std::chrono::duration<double, std::milli> time = t2 - t1;
+
+	return static_cast<double>(time.count()) / num_iterations;
+}
+
 // TODO Reduce redundant code
 benchmark_result start_benchmark(benchmark_setting &setting)
 {
@@ -57,61 +70,43 @@ benchmark_result start_benchmark(benchmark_setting &setting)
 		
 		matrix_result m_result(matrix);
 
+
+
+
 		// CPU SpMV
 		cusp::csr_matrix<int, float, cusp::host_memory> csr_matrix;
 		read_matrix(matrix, setting.matrix_path, csr_matrix);
 		std::vector<float> x(matrix.num_cols, 1);
 		std::vector<float> y(matrix.num_rows, 0);
 		
-		auto t1 = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < setting.num_iterations; i++)
-			blas::mkl::spmv(csr_matrix, x, y);
-		auto t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> mkl_time = t2 - t1;
+		m_result.time.emplace_back(static_cast<std::string>("mkl"), 
+			time_spmv([&csr_matrix, &x, &y] {blas::mkl::spmv(csr_matrix, x, y); }, setting.num_iterations));
 
-		m_result.time.emplace_back(static_cast<std::string>("mkl"), static_cast<double>(mkl_time.count()));
-		
 		// GPU cusp
 		cusp::csr_matrix<int, float, cusp::device_memory> d_csr_matrix(csr_matrix);
 		thrust::device_vector<float> d_x(matrix.num_cols, 1);
 		thrust::device_vector<float> d_y(matrix.num_rows, 0);
 
-		t1 = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < setting.num_iterations; i++)
-		{
-			blas::cusp::spmv(d_csr_matrix, d_x, d_y);
-			throw_on_cuda_error(cudaDeviceSynchronize());
-		}
-		t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> cusp_time = t2 - t1;
-
-		m_result.time.emplace_back(static_cast<std::string>("cusp"), static_cast<double>(cusp_time.count()));
+		m_result.time.emplace_back(static_cast<std::string>("cusp"),
+			time_spmv(
+				[&d_csr_matrix, &d_x, &d_y] 
+				{blas::cusp::spmv(d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); },
+				setting.num_iterations));
 
 		// GPU cusparse
-		auto handle = blas::cusparse::create_handle();
-		auto descr = blas::cusparse::create_mat_descr(d_csr_matrix);
+		auto cusparse_handle = blas::cusparse::create_handle();
+		auto cusparse_descr = blas::cusparse::create_mat_descr(d_csr_matrix);
+		m_result.time.emplace_back(static_cast<std::string>("cusparse"),
+			time_spmv(
+				[&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
+				{blas::cusparse::spmv(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
+				setting.num_iterations));
 
-		t1 = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < setting.num_iterations; i++)
-		{
-			blas::cusparse::spmv(handle, descr, d_csr_matrix, d_x, d_y);
-			throw_on_cuda_error(cudaDeviceSynchronize());
-		}
-		t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> cusparse_time = t2 - t1;
-		m_result.time.emplace_back(static_cast<std::string>("cusparse"), static_cast<double>(cusparse_time.count()));
-
-
-		// GPU cusparse cusparse_mp
-		t1 = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < setting.num_iterations; i++)
-		{
-			blas::cusparse::spmv_mp(handle, descr, d_csr_matrix, d_x, d_y);
-			throw_on_cuda_error(cudaDeviceSynchronize());
-		}
-		t2 = std::chrono::high_resolution_clock::now();
-		std::chrono::duration<double, std::milli> cusparse_mp_time = t2 - t1;
-		m_result.time.emplace_back(static_cast<std::string>("cusparse_mp"), static_cast<double>(cusparse_mp_time.count()));
+		// GPU cusparse_mp
+		m_result.time.emplace_back(static_cast<std::string>("cusparse_mp"),
+			time_spmv([&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
+					  {blas::cusparse::spmv_mp(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
+				setting.num_iterations));
 
 		b_result.push_back(m_result);
 	}
