@@ -1,4 +1,4 @@
-#include "json_reader.h"
+#include "json_io.h"
 #include <fstream>
 #include <json.hpp>
 
@@ -30,6 +30,12 @@ void from_json(const json& j, benchmark_setting& s)
 	s.matrices = j.at("matrices").get<std::vector<matrix_info>>();
 }
 
+//For matrix_result
+void to_json(json& j, const matrix_result& result)
+{
+	j = json{ { "matrix", result.matrix },{ "time", result.time }};
+}
+
 
 
 benchmark_setting parse_json(std::string json_filename)
@@ -41,4 +47,12 @@ benchmark_setting parse_json(std::string json_filename)
 	benchmark_setting setting = input_json;
 
 	return setting;
+}
+
+void dump_json(benchmark_result result, std::string filename)
+{
+	std::ofstream output_file(filename);
+	json output_json = result;
+
+	output_json >> output_file;
 }

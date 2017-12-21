@@ -17,7 +17,7 @@ endif()
 set(CMAKE_CUDA_FLAGS "-gencode arch=compute_61,code=sm_61 -gencode arch=compute_52,code=sm_52 
                       -Xcompiler -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA 
                       -Xcompiler -DCUSP_DEVICE_BLAS_SYSTEM=CUSP_DEVICE_BLAS_CUBLAS 
-                      -Xcompiler -DTHRUST_HOST_SYSTEM=THRUST_HOST_SYSTEM_OMP                       
+                      -Xcompiler -DTHRUST_HOST_SYSTEM=THRUST_HOST_SYSTEM_TBB                       
                       ${CMAKE_CUDA_FLAGS}")
 
 
@@ -35,5 +35,8 @@ include(./dependencies/CMakeLists.txt)
 list(APPEND CMAKE_MODULE_PATH C:/MyLib/CMake)
 find_package(MKL REQUIRED)
 include_directories(${MKL_INCLUDE_DIR})
+
+#intel tbb
+find_package(tbb)
 
 add_subdirectory(src)
