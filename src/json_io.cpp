@@ -7,7 +7,7 @@ using nlohmann::json;
 // For matrix_info
 void to_json(json& j, const matrix_info& info) 
 {
-	j = json{ { "num_rows", info.num_rows },{ "num_cols", info.num_rows },{ "data_filename", info.num_rows } };
+	j = json{ { "num_rows", info.num_rows },{ "num_cols", info.num_rows },{ "data_filename", info.data_filename } };
 }
 
 void from_json(const json& j, matrix_info& info) 
