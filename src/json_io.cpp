@@ -4,13 +4,13 @@
 
 using nlohmann::json;
 
-// For matrix_info
-void to_json(json& j, const matrix_info& info) 
+// For matrix_info_t
+void to_json(json& j, const matrix_info_t& info) 
 {
 	j = json{ { "num_rows", info.num_rows },{ "num_cols", info.num_rows },{ "data_filename", info.data_filename } };
 }
 
-void from_json(const json& j, matrix_info& info) 
+void from_json(const json& j, matrix_info_t& info) 
 {
 	info.num_rows = j.at("num_rows").get<int>();
 	info.num_cols = j.at("num_cols").get<int>();
@@ -18,38 +18,38 @@ void from_json(const json& j, matrix_info& info)
 }
 
 // For benchmarksetting
-void to_json(json& j, const benchmark_setting& s)
+void to_json(json& j, const benchmark_setting_t& s)
 {
 	j = json{ { "num_iterations", s.num_iterations },{ "matrix_path", s.matrix_path },{ "matrices", s.matrices } };
 }
 
-void from_json(const json& j, benchmark_setting& s) 
+void from_json(const json& j, benchmark_setting_t& s) 
 {
 	s.num_iterations = j.at("num_iterations").get<int>();
 	s.matrix_path = j.at("matrix_path").get<std::vector<std::string>>();
-	s.matrices = j.at("matrices").get<std::vector<matrix_info>>();
+	s.matrices = j.at("matrices").get<std::vector<matrix_info_t>>();
 }
 
 //For matrix_result
-void to_json(json& j, const matrix_result& result)
+void to_json(json& j, const matrix_result_t& result)
 {
 	j = json{ { "matrix", result.matrix },{ "time", result.time }};
 }
 
 
 
-benchmark_setting parse_json(std::string json_filename)
+benchmark_setting_t parse_json(std::string json_filename)
 {
 	std::ifstream input_file(json_filename);
 	json input_json;
 	input_file >> input_json;
 
-	benchmark_setting setting = input_json;
+	benchmark_setting_t setting = input_json;
 
 	return setting;
 }
 
-void dump_json(benchmark_result result, std::string filename)
+void dump_json(benchmark_result_t result, std::string filename)
 {
 	std::ofstream output_file(filename);
 	json output_json = result;

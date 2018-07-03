@@ -8,7 +8,7 @@ int main(int argc, char **argv)
 	try
 	{
 		std::string input_filename = "C:/Users/tm42h7/Desktop/TPS/SpMVWrapper/cases/demo.json";
-		benchmark_setting setting = parse_json(input_filename);
+		benchmark_setting_t setting = parse_json(input_filename);
 		auto r = start_benchmark(setting);
 		dump_json(r);
 	}

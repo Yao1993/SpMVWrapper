@@ -67,6 +67,7 @@ namespace blas
 		}
 
 		// Only enabled when value_type is float
+		// TODO use tag-dispatching to deal with float, double and complex
 		template <typename device_matrix_t, typename device_vector_t>
 		void spmv(cusparseHandle_t handle, cusparseMatDescr_t descr, device_matrix_t &device_matrix, device_vector_t &x, device_vector_t &y,
 		 typename std::enable_if<

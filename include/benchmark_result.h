@@ -2,13 +2,14 @@
 #include <vector>
 
 #include "matrix_info.h"
+#include <unordered_map>
 
-struct matrix_result
+struct matrix_result_t
 {
-    matrix_info matrix;
-    std::vector<std::pair<std::string, double>> time;
+    matrix_info_t matrix;
+    std::unordered_map<std::string, double> time;
     
-    matrix_result(matrix_info m) : matrix(m) {}
+    matrix_result_t(matrix_info_t m) : matrix(m) {}
 };
 
-using benchmark_result = std::vector<matrix_result>;
+using benchmark_result_t = std::vector<matrix_result_t>;
