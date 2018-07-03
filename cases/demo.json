@@ -1,5 +1,5 @@
 {
-    "num_iterations": 1000,
+    "num_iterations": 100,
     
     "matrix_path": [
         "C:/Users/tm42h7/Desktop/TPS/DoseMatrix/"
