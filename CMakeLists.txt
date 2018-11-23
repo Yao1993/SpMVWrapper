@@ -13,17 +13,20 @@ if (OPENMP_FOUND)
 endif()
 
 
-# Compiler Options
-set(CMAKE_CUDA_FLAGS "-gencode arch=compute_61,code=sm_61 -gencode arch=compute_52,code=sm_52 
-                      -Xcompiler -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA 
-                      -Xcompiler -DCUSP_DEVICE_BLAS_SYSTEM=CUSP_DEVICE_BLAS_CUBLAS 
-                      -Xcompiler -DTHRUST_HOST_SYSTEM=THRUST_HOST_SYSTEM_TBB                       
-                      ${CMAKE_CUDA_FLAGS}")
-
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_70,code=sm_70")
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_61,code=sm_61")
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_52,code=sm_52")
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_50,code=sm_50")
+string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA")
+string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DCUSP_DEVICE_BLAS_SYSTEM=CUSP_DEVICE_BLAS_CUBLAS") 
+string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DTHRUST_HOST_SYSTEM=THRUST_HOST_SYSTEM_TBB")
 
 if (WIN32)
+    set(CMAKE_CXX_FLAGS "/arch:AVX2 /Qvec-report:1 ${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "/Qpar /Qpar-report:1 ${CMAKE_CXX_FLAGS}")
     set(CMAKE_CUDA_FLAGS "-Xcompiler \"/wd 4819\" ${CMAKE_CUDA_FLAGS}")
 endif (WIN32)
+
 
 # Output Directory
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)

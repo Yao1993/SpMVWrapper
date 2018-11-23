@@ -1,11 +1,11 @@
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 add_library(mkl_spmv mkl_spmv.cpp)
-target_link_libraries(mkl_spmv  TBB::tbb  "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2018.0.124/windows/mkl/lib/intel64_win/mkl_tbb_thread.lib" 
-                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2018.0.124/windows/mkl/lib/intel64_win/mkl_core.lib"
-                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2018.0.124/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib"
-                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2018.0.124/windows/mkl/lib/intel64_win/mkl_intel_thread.lib"
-                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2018.0.124/windows/compiler/lib/intel64_win/libiomp5md.lib"
+target_link_libraries(mkl_spmv  TBB::tbb  "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64_win/mkl_tbb_thread.lib" 
+                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64_win/mkl_core.lib"
+                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64_win/mkl_intel_lp64.lib"
+                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/mkl/lib/intel64_win/mkl_intel_thread.lib"
+                                          "C:/Program Files (x86)/IntelSWTools/compilers_and_libraries_2019/windows/compiler/lib/intel64_win/libiomp5md.lib"
                                           
 )
 
