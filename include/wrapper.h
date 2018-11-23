@@ -1,6 +1,7 @@
 #pragma once
 
 #include "mkl_spmv.h"
+#include <thrust/device_vector.h>
 #include <cusp/csr_matrix.h>
 #include <cusp/multiply.h>
 #include <cusp/array1d.h>
@@ -22,6 +23,7 @@ namespace blas
 
 			spmv(
 				host_matrix.num_rows,
+				host_matrix.num_cols,
 				thrust::raw_pointer_cast(host_matrix.values.data()),
 				thrust::raw_pointer_cast(host_matrix.row_offsets.data()),
 				thrust::raw_pointer_cast(host_matrix.column_indices.data()),

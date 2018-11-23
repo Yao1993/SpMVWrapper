@@ -7,6 +7,7 @@ namespace blas
 	namespace mkl
 	{
 		void spmv(MKL_INT m,
+			MKL_INT n,
 			double values[],
 			MKL_INT row_offsets[],
 			MKL_INT column_indices[],
@@ -14,6 +15,7 @@ namespace blas
 			double y[]);
 
 		void spmv(MKL_INT m,
+			MKL_INT n,
 			float values[],
 			MKL_INT row_offsets[],
 			MKL_INT column_indices[],
