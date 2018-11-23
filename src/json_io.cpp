@@ -54,5 +54,5 @@ void dump_json(benchmark_result_t result, std::string filename)
 	std::ofstream output_file(filename);
 	json output_json = result;
 
-	output_json >> output_file;
+	output_file << output_json;
 }
