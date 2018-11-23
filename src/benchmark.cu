@@ -26,7 +26,6 @@ bool is_file_exist(std::string filename)
 void read_matrix(const matrix_info_t &matrix, const std::vector<std::string> path,
 	cusp::csr_matrix<int, float, cusp::host_memory> &csr_matrix)
 {
-
 	std::string filename;
 	bool is_found = false;
 	for (auto &dir : path)
@@ -39,12 +38,17 @@ void read_matrix(const matrix_info_t &matrix, const std::vector<std::string> pat
 		}
 	}
 
+	std::cout << "Read " << filename << std::endl;
+
 	if (!is_found)
 		throw(filename + " NOT found!");
 
 	std::vector<float> raw_data;
 	yao::io::ReadBinaryArray(filename, raw_data);
 	yao::cusp_ext::convert(&raw_data[0], matrix.num_rows, matrix.num_cols, csr_matrix);
+
+	float nnz_percent = static_cast<float>(csr_matrix.num_entries) / (csr_matrix.num_rows * csr_matrix.num_cols);
+	std::cout << "nnz%=" << nnz_percent << std::endl;
 	
 }
 
@@ -80,8 +84,8 @@ benchmark_result_t start_benchmark(benchmark_setting_t &setting)
 		std::vector<float> x(matrix.num_cols, 1);
 		std::vector<float> y(matrix.num_rows, 0);
 		
-		//m_result.time.emplace_back(static_cast<std::string>("mkl"), 
-		//	time_spmv([&csr_matrix, &x, &y] {blas::mkl::spmv(csr_matrix, x, y); }, setting.num_iterations));
+		m_result.time.emplace(static_cast<std::string>("mkl"), 
+			time_spmv([&csr_matrix, &x, &y] {blas::mkl::spmv(csr_matrix, x, y); }, setting.num_iterations));
 
 
 		::cusp::array1d_view<typename std::vector<float>::iterator> x_view(x.begin(), x.end());
