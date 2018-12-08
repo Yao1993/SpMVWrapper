@@ -2,7 +2,8 @@
     "num_iterations": 100,
     
     "matrix_path": [
-        "C:/Users/tm42h7/Desktop/TPS/DoseMatrix/"
+        "C:/Users/tm42h7/Desktop/TPS/DoseMatrix/",
+        "D:/DoseMatrix/HN/"
     ],
 
     "matrices": [
@@ -10,6 +11,12 @@
             "num_rows" : 69401,
             "num_cols" : 6987,
             "data_filename" : "demo.bin"
+        },
+        {
+            "num_rows": 159822,
+            "num_cols": 19978,
+            "data_filename": "hn.bin.all"
         }
+
     ]
 }
