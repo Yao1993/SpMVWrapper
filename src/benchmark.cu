@@ -113,7 +113,7 @@ benchmark_result_t start_benchmark(benchmark_setting_t &setting)
 		auto cusparse_handle = blas::cusparse::create_handle();
 		auto cusparse_descr = blas::cusparse::create_mat_descr(d_csr_matrix);
 		m_result.time.emplace(static_cast<std::string>("cusparse"),
-			time_spmv(
+			time_spmv( 
 				[&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
 				{blas::cusparse::spmv(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
 				setting.num_iterations));
