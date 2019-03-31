@@ -32,6 +32,6 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 include(./dependencies/CMakeLists.txt)
 
 #intel tbb
-find_package(tbb)
+find_package(TBB)
 
 add_subdirectory(src)

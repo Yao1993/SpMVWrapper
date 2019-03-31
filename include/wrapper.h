@@ -1,6 +1,5 @@
 #pragma once
 
-#include "mkl_spmv.h"
 #include <thrust/device_vector.h>
 #include <cusp/csr_matrix.h>
 #include <cusp/multiply.h>

@@ -1,4 +1,3 @@
-#pragma once
 #include "benchmark.h"
 #include "wrapper.h"
 #include <exception>
