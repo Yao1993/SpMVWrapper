@@ -13,10 +13,7 @@ if (OPENMP_FOUND)
 endif()
 
 
-string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_70,code=sm_70")
-string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_61,code=sm_61")
-string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_52,code=sm_52")
-string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_50,code=sm_50")
+string(APPEND CMAKE_CUDA_FLAGS " -gencode arch=compute_75,code=sm_75")
 string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA")
 string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DCUSP_DEVICE_BLAS_SYSTEM=CUSP_DEVICE_BLAS_CUBLAS") 
 string(APPEND CMAKE_CUDA_FLAGS " -Xcompiler -DTHRUST_HOST_SYSTEM=THRUST_HOST_SYSTEM_TBB")
@@ -33,11 +30,6 @@ SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
 # Dependencies
 include(./dependencies/CMakeLists.txt)
-
-# MKL package
-list(APPEND CMAKE_MODULE_PATH C:/MyLib/CMake)
-find_package(MKL REQUIRED)
-include_directories(${MKL_INCLUDE_DIR})
 
 #intel tbb
 find_package(tbb)

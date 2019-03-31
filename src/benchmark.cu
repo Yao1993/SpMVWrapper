@@ -84,18 +84,18 @@ benchmark_result_t start_benchmark(benchmark_setting_t &setting)
 		std::vector<float> x(matrix.num_cols, 1);
 		std::vector<float> y(matrix.num_rows, 0);
 		
-		m_result.time.emplace(static_cast<std::string>("mkl"), 
-			time_spmv([&csr_matrix, &x, &y] {blas::mkl::spmv(csr_matrix, x, y); }, setting.num_iterations));
+		// m_result.time.emplace(static_cast<std::string>("mkl"), 
+		// 	time_spmv([&csr_matrix, &x, &y] {blas::mkl::spmv(csr_matrix, x, y); }, setting.num_iterations));
 
 
 		::cusp::array1d_view<typename std::vector<float>::iterator> x_view(x.begin(), x.end());
 		::cusp::array1d_view<typename std::vector<float>::iterator> y_view(y.begin(), y.end());
 		// CPU cusp
-		m_result.time.emplace(static_cast<std::string>("cusp_tbb"),
-			time_spmv(
-				[&csr_matrix, &x_view, &y_view]
-		{::cusp::multiply(::cusp::tbb::par, csr_matrix, x_view, y_view);},
-			setting.num_iterations));
+		// m_result.time.emplace(static_cast<std::string>("cusp_tbb"),
+		// 	time_spmv(
+		// 		[&csr_matrix, &x_view, &y_view]
+		// {::cusp::multiply(::cusp::tbb::par, csr_matrix, x_view, y_view);},
+		// 	setting.num_iterations));
 
 
 		// GPU cusp
