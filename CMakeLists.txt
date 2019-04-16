@@ -4,6 +4,11 @@ project(SpMVWrapper LANGUAGES CXX CUDA)
 
 set(CMAKE_CUDA_STANDARD 11)
 
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+
+find_package(VTune)
+
 find_package(OpenMP)
 if (OPENMP_FOUND)
     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}")
@@ -24,7 +29,6 @@ if (WIN32)
     set(CMAKE_CUDA_FLAGS "-Xcompiler \"/wd 4819\" ${CMAKE_CUDA_FLAGS}")
 endif (WIN32)
 
-
 # Output Directory
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 
@@ -35,3 +39,4 @@ include(./dependencies/CMakeLists.txt)
 find_package(TBB)
 
 add_subdirectory(src)
+

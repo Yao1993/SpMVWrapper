@@ -16,6 +16,8 @@
 
 #include <cusp/system/tbb/detail/par.h>
 
+#include "ittnotify.h"
+
 bool is_file_exist(std::string filename)
 {
 	std::ifstream infile(filename);
@@ -89,39 +91,53 @@ benchmark_result_t start_benchmark(benchmark_setting_t &setting)
 
 		::cusp::array1d_view<typename std::vector<float>::iterator> x_view(x.begin(), x.end());
 		::cusp::array1d_view<typename std::vector<float>::iterator> y_view(y.begin(), y.end());
-		// CPU cusp
-		// m_result.time.emplace(static_cast<std::string>("cusp_tbb"),
-		// 	time_spmv(
-		// 		[&csr_matrix, &x_view, &y_view]
-		// {::cusp::multiply(::cusp::tbb::par, csr_matrix, x_view, y_view);},
-		// 	setting.num_iterations));
+		//CPU cusp
+
+		__itt_domain* domain = __itt_domain_create("MyDomain");
+		__itt_string_handle* op_task = __itt_string_handle_create("SpMV");
 
 
-		// GPU cusp
-		cusp::csr_matrix<int, float, cusp::device_memory> d_csr_matrix(csr_matrix);
-		thrust::device_vector<float> d_x(csr_matrix.num_cols, 1);
-		thrust::device_vector<float> d_y(csr_matrix.num_rows, 0);
+		__itt_resume();
 
-		m_result.time.emplace(static_cast<std::string>("cusp_cuda"),
+		__itt_task_begin(domain, __itt_null, __itt_null, op_task);
+
+
+		m_result.time.emplace(static_cast<std::string>("cusp_tbb"),
 			time_spmv(
-				[&d_csr_matrix, &d_x, &d_y] 
-				{blas::cusp::spmv(d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); },
-				setting.num_iterations));
+				[&csr_matrix, &x_view, &y_view]
+		{::cusp::multiply(::cusp::tbb::par, csr_matrix, x_view, y_view);},
+			setting.num_iterations));
 
-		// GPU cusparse
-		auto cusparse_handle = blas::cusparse::create_handle();
-		auto cusparse_descr = blas::cusparse::create_mat_descr(d_csr_matrix);
-		m_result.time.emplace(static_cast<std::string>("cusparse"),
-			time_spmv( 
-				[&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
-				{blas::cusparse::spmv(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
-				setting.num_iterations));
+		__itt_task_end(domain);
 
-		// GPU cusparse_mp
-		m_result.time.emplace(static_cast<std::string>("cusparse_mp"),
-			time_spmv([&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
-					  {blas::cusparse::spmv_mp(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
-				setting.num_iterations));
+		__itt_pause();
+
+
+		// // GPU cusp
+		// cusp::csr_matrix<int, float, cusp::device_memory> d_csr_matrix(csr_matrix);
+		// thrust::device_vector<float> d_x(csr_matrix.num_cols, 1);
+		// thrust::device_vector<float> d_y(csr_matrix.num_rows, 0);
+
+		// m_result.time.emplace(static_cast<std::string>("cusp_cuda"),
+		// 	time_spmv(
+		// 		[&d_csr_matrix, &d_x, &d_y] 
+		// 		{blas::cusp::spmv(d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); },
+		// 		setting.num_iterations));
+
+		// // GPU cusparse
+		// auto cusparse_handle = blas::cusparse::create_handle();
+		// auto cusparse_descr = blas::cusparse::create_mat_descr(d_csr_matrix);
+		// m_result.time.emplace(static_cast<std::string>("cusparse"),
+		// 	time_spmv( 
+		// 		[&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
+		// 		{blas::cusparse::spmv(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
+		// 		setting.num_iterations));
+
+		// // GPU cusparse_mp
+		// m_result.time.emplace(static_cast<std::string>("cusparse_mp"),
+		// 	time_spmv([&cusparse_handle, &cusparse_descr, &d_csr_matrix, &d_x, &d_y] 
+		// 			  {blas::cusparse::spmv_mp(cusparse_handle, cusparse_descr, d_csr_matrix, d_x, d_y); throw_on_cuda_error(cudaDeviceSynchronize()); }, 
+		// 		setting.num_iterations));
 
 		b_result.push_back(m_result);
 	}
