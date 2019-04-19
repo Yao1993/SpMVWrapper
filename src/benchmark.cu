@@ -26,7 +26,7 @@ bool is_file_exist(std::string filename)
 	return infile.good();
 }
 
-void read_matrix(const matrix_info_t &matrix, const std::vector<std::string> path,
+void read_matrix(matrix_info_t &matrix, const std::vector<std::string> path,
 	cusp::csr_matrix<int, float, cusp::host_memory> &csr_matrix, float ValueThreshold)
 {
 	std::string filename;
@@ -49,6 +49,8 @@ void read_matrix(const matrix_info_t &matrix, const std::vector<std::string> pat
 	std::vector<float> raw_data;
 	yao::io::ReadBinaryArray(filename, raw_data);
 	yao::cusp_ext::convert(&raw_data[0], matrix.num_rows, matrix.num_cols, csr_matrix, ValueThreshold);
+
+    matrix.nnz = csr_matrix.num_entries;
 
 	float nnz_percent = static_cast<float>(csr_matrix.num_entries) / (csr_matrix.num_rows * csr_matrix.num_cols);
 	std::cout << "nnz%=" << nnz_percent << std::endl;
@@ -76,14 +78,12 @@ benchmark_result_t start_benchmark(benchmark_setting_t &setting)
 	for (auto & matrix : setting.matrices)
 	{
 		
-		matrix_result_t m_result(matrix);
-
-
-
-
 		// CPU SpMV
 		cusp::csr_matrix<int, float, cusp::host_memory> csr_matrix;
 		read_matrix(matrix, setting.matrix_path, csr_matrix, setting.value_threshold);
+
+		matrix_result_t m_result(matrix);
+
 		std::vector<float> x(matrix.num_cols, 1);
 		std::vector<float> y(matrix.num_rows, 0);
 		
