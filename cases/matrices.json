@@ -1,0 +1,27 @@
+{
+    "num_iterations": 10,
+    "value_threshold": 1e-4,
+    
+    "matrix_path": [
+        "D:/DoseMatrix/SpMVPerformance/"
+    ],
+
+    "matrices": [
+        {
+            "num_rows": 20574,
+            "num_cols": 23657,
+            "data_filename": "hn.bin.all"
+        },
+        {
+            "num_rows": 34605,
+            "num_cols": 18729,
+            "data_filename": "lung.bin.all"
+        },
+        {
+            "num_rows": 29304,
+            "num_cols": 7112,
+            "data_filename": "pro.bin.all"
+        }
+
+    ]
+}
