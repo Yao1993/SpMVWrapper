@@ -8,6 +8,7 @@
 #include <yao/cusparse/cusparse_error.h>
 #include <type_traits>
 
+#include "mkl_spmv.h"
 
 namespace blas
 {

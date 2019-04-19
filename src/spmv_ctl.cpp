@@ -3,11 +3,18 @@
 
 #include <iostream>
 
+
+#ifdef ENABLE_VTUNE
 #include "ittnotify.h"
+#endif
 
 int main(int argc, char **argv)
 {
+
+	
+	#ifdef ENABLE_VTUNE
 	__itt_pause();
+	#endif
 
 	try
 	{
