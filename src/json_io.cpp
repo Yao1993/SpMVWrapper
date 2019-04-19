@@ -20,7 +20,7 @@ void from_json(const json& j, matrix_info_t& info)
 // For benchmarksetting
 void to_json(json& j, const benchmark_setting_t& s)
 {
-	j = json{ { "num_iterations", s.num_iterations },{ "matrix_path", s.matrix_path },{ "matrices", s.matrices } };
+	j = json{ { "num_iterations", s.num_iterations },{ "matrix_path", s.matrix_path },{ "matrices", s.matrices }, {"value_threshold", s.value_threshold} };
 }
 
 void from_json(const json& j, benchmark_setting_t& s) 
@@ -28,6 +28,7 @@ void from_json(const json& j, benchmark_setting_t& s)
 	s.num_iterations = j.at("num_iterations").get<int>();
 	s.matrix_path = j.at("matrix_path").get<std::vector<std::string>>();
 	s.matrices = j.at("matrices").get<std::vector<matrix_info_t>>();
+    s.value_threshold = j.at("value_threshold").get<float>();
 }
 
 //For matrix_result
